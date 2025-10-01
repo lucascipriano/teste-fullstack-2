@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Filament\Public\Pages\Home;
+use App\Filament\Public\Resources\Subreddits\SubredditResource;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -27,6 +28,10 @@ final class PublicPanelProvider extends PanelProvider
             ->id('public')
             ->default()
             ->path('')
+            ->resources([
+                SubredditResource::class,
+            ])
+            ->authGuard('web')
             ->sidebarCollapsibleOnDesktop()
             ->colors([
                 'primary' => Color::Purple,

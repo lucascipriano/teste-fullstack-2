@@ -45,8 +45,13 @@ final class SubredditResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->where('user_id', Auth::id());
+        $query = parent::getEloquentQuery();
+
+        if (Auth::check()) {
+            $query->where('user_id', Auth::id());
+        }
+
+        return $query;
     }
 
     public static function getPages(): array
@@ -70,21 +75,36 @@ final class SubredditResource extends Resource
 
     public static function getNavigationItems(): array
     {
-        if (! Auth::check()) {
-            return [];
+        if (Auth::check()) {
+            // Para usuários logados, mostrar apenas seus subreddits
+            $userSubreddits = Subreddit::query()->where('user_id', Auth::id())
+                ->orderBy('name')
+                ->get();
+
+            $items = [];
+
+            foreach ($userSubreddits as $subreddit) {
+                $items[] = NavigationItem::make($subreddit->name)
+                    ->url(self::getUrl('edit', ['record' => $subreddit]))
+                    ->icon($subreddit->icon_image ? asset('storage/'.$subreddit->icon_image) : 'heroicon-o-rectangle-stack')
+                    ->group('Meus Subreddits');
+            }
+
+            return $items;
         }
 
-        $userSubreddits = Subreddit::query()->where('user_id', Auth::id())
+        //  Guest
+        $allSubreddits = Subreddit::query()
             ->orderBy('name')
             ->get();
 
         $items = [];
 
-        foreach ($userSubreddits as $subreddit) {
+        foreach ($allSubreddits as $subreddit) {
             $items[] = NavigationItem::make($subreddit->name)
-                ->url(self::getUrl('edit', ['record' => $subreddit]))
+                ->url(self::getUrl('index')) // Vai para a listagem geral
                 ->icon($subreddit->icon_image ? asset('storage/'.$subreddit->icon_image) : 'heroicon-o-rectangle-stack')
-                ->group('Meus Subreddits');
+                ->group('Subreddits');
         }
 
         return $items;
