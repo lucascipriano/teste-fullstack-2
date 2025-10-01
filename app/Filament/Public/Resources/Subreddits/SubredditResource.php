@@ -87,7 +87,7 @@ final class SubredditResource extends Resource
                 $items[] = NavigationItem::make($subreddit->name)
                     ->url(self::getUrl('edit', ['record' => $subreddit]))
                     ->icon($subreddit->icon_image ? asset('storage/'.$subreddit->icon_image) : 'heroicon-o-rectangle-stack')
-                    ->group('Meus Subreddits');
+                    ->group('Minhas comunidades');
             }
 
             return $items;
@@ -104,7 +104,7 @@ final class SubredditResource extends Resource
             $items[] = NavigationItem::make($subreddit->name)
                 ->url(self::getUrl('index')) // Vai para a listagem geral
                 ->icon($subreddit->icon_image ? asset('storage/'.$subreddit->icon_image) : 'heroicon-o-rectangle-stack')
-                ->group('Subreddits');
+                ->group('Todas comunidades');
         }
 
         return $items;
