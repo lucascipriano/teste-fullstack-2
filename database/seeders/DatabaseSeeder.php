@@ -18,6 +18,11 @@ final class DatabaseSeeder extends Seeder
             User::factory()->admin()->create();
         }
 
+        User::factory()->create([
+            'name' => 'Lucas',
+            'email' => 'lucas@gmail.com',
+        ]);
+
         User::factory(10)->create();
     }
 }
