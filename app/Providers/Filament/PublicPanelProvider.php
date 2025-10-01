@@ -27,6 +27,7 @@ final class PublicPanelProvider extends PanelProvider
             ->id('public')
             ->default()
             ->path('')
+            ->sidebarCollapsibleOnDesktop()
             ->colors([
                 'primary' => Color::Purple,
             ])

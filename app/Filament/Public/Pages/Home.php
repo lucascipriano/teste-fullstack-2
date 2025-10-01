@@ -8,5 +8,7 @@ use Filament\Pages\Page;
 
 final class Home extends Page
 {
+    protected static ?string $slug = '/';
+
     protected string $view = 'livewire.home.index';
 }
