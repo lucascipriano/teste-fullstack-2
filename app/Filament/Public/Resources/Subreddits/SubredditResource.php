@@ -7,7 +7,9 @@ namespace App\Filament\Public\Resources\Subreddits;
 use App\Filament\Public\Resources\Subreddits\Pages\CreateSubreddit;
 use App\Filament\Public\Resources\Subreddits\Pages\EditSubreddit;
 use App\Filament\Public\Resources\Subreddits\Pages\ListSubreddits;
+use App\Filament\Public\Resources\Subreddits\Pages\ViewSubreddit;
 use App\Filament\Public\Resources\Subreddits\Schemas\SubredditForm;
+use App\Filament\Public\Resources\Subreddits\Schemas\SubredditInfolist;
 use App\Filament\Public\Resources\Subreddits\Tables\SubredditsTable;
 use App\Models\Subreddit;
 use BackedEnum;
@@ -31,6 +33,11 @@ final class SubredditResource extends Resource
         return SubredditForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return SubredditInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return SubredditsTable::configure($table);
@@ -43,6 +50,16 @@ final class SubredditResource extends Resource
         ];
     }
 
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListSubreddits::route('/'),
+            'create' => CreateSubreddit::route('/create'),
+            'view' => ViewSubreddit::route('/{record}'),
+            'edit' => EditSubreddit::route('/{record}/edit'),
+        ];
+    }
+
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
@@ -52,15 +69,6 @@ final class SubredditResource extends Resource
         }
 
         return $query;
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => ListSubreddits::route('/'),
-            'create' => CreateSubreddit::route('/create'),
-            'edit' => EditSubreddit::route('/{record}/edit'),
-        ];
     }
 
     public static function canCreate(): bool
@@ -85,15 +93,15 @@ final class SubredditResource extends Resource
 
             foreach ($userSubreddits as $subreddit) {
                 $items[] = NavigationItem::make($subreddit->name)
-                    ->url(self::getUrl('edit', ['record' => $subreddit]))
+                    ->url(self::getUrl('view', ['record' => $subreddit]))
                     ->icon($subreddit->icon_image ? asset('storage/'.$subreddit->icon_image) : 'heroicon-o-rectangle-stack')
-                    ->group('Minhas comunidades');
+                    ->group('Meus Subreddits');
             }
 
             return $items;
         }
 
-        //  Guest
+        // Guest
         $allSubreddits = Subreddit::query()
             ->orderBy('name')
             ->get();
@@ -102,9 +110,9 @@ final class SubredditResource extends Resource
 
         foreach ($allSubreddits as $subreddit) {
             $items[] = NavigationItem::make($subreddit->name)
-                ->url(self::getUrl('index')) // Vai para a listagem geral
+                ->url(self::getUrl('view', ['record' => $subreddit]))
                 ->icon($subreddit->icon_image ? asset('storage/'.$subreddit->icon_image) : 'heroicon-o-rectangle-stack')
-                ->group('Todas comunidades');
+                ->group('Subreddits');
         }
 
         return $items;

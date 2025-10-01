@@ -5,19 +5,17 @@ declare(strict_types=1);
 namespace App\Filament\Public\Resources\Subreddits\Pages;
 
 use App\Filament\Public\Resources\Subreddits\SubredditResource;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\ViewAction;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\EditAction;
+use Filament\Resources\Pages\ViewRecord;
 
-final class EditSubreddit extends EditRecord
+final class ViewSubreddit extends ViewRecord
 {
     protected static string $resource = SubredditResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            ViewAction::make(),
-            DeleteAction::make(),
+            EditAction::make(),
         ];
     }
 }
